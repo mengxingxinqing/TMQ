@@ -1,3 +1,6 @@
+/**
+程序接收pub消息格式 
+**/
 package main
 
 import (
@@ -11,6 +14,11 @@ import (
 )
 
 var globalSessionID uint64
+
+const(
+	bodySplit = "-"
+	contentSplit = "|"
+)
 
 // Session is client struct
 type Session struct {
@@ -82,6 +90,7 @@ func tcpRequest(session Session) {
 	}
 }
 
+//tcpResponse 响应tcp请求
 func tcpResponse(session Session) {
 	for {
 		msg := <-session.ResponseMsg
@@ -113,7 +122,7 @@ func listRemove(list *list.List, session Session) {
 
 //processRequests 防止粘包
 func processRequests(session Session, str string) {
-	for _, v := range strings.Split(str, "-") {
+	for _, v := range strings.Split(str, bodySplit) {
 		if v != "" {
 			processRequest(session, v)
 		}
@@ -122,7 +131,7 @@ func processRequests(session Session, str string) {
 
 //processRequest 处理请求
 func processRequest(session Session, str string) {
-	arr := strings.Split(str, "|")
+	arr := strings.Split(str, contentSplit)
 	log(session, str)
 	if len(arr) < 2 {
 		return
@@ -141,6 +150,7 @@ func processRequest(session Session, str string) {
 	}
 }
 
+//makeMsg 构造响应客户端的消息结构
 func makeMsg(str string) string {
 	return "-pub|" + str + "\n"
 }

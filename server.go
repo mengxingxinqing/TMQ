@@ -1,5 +1,6 @@
 /**
-程序接收pub消息格式 
+程序接收pub消息格式 -pub|channel|msg
+程序接收sub消息格式 -sub|channel
 **/
 package main
 
